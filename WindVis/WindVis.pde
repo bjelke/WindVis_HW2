@@ -73,5 +73,42 @@ float readRaw(Table tab, int x, int y) {
   if (y >= tab.getRowCount()) {
     y = tab.getRowCount() - 1;
   }
+  System.out.println(bilinearInterpolation(14.0,20.0, 91.0,15.0,20.0,210.0, 14.0,21.0,162.0,15.0,21.0,95.0,14.5,20.2));
   return tab.getFloat(y,x);
+}
+
+//float bilinearInterpolation(float x, float y, float x1, float x2, float y1, float y2, float Q11, float Q12, float Q21, float Q22){
+
+//  float upperLeft = (((x2 - x)*(y2 - y))/((x2-x1)*(y2-y1)))*Q11; 
+//  float upperRight = (((x - x1)*(y2 - y))/((x2-x1)*(y2-y1)))*Q21; 
+//  float lowerLeft = (((x2 - x)*(y - y1))/((x2-x1)*(y2-y1)))*Q12; 
+//  float lowerRight= (((x - x1)*(y - y1))/((x2-x1)*(y2-y1)))*Q22; 
+//  float result = upperLeft +upperRight + lowerLeft + lowerRight;
+  
+//  // find first point
+//  float a = interpolation(
+  
+  
+//  return result; 
+//}
+
+float bilinearInterpolation(float x1, float y1, float val1, float x2, float y2, float val2, float x3, float y3, float val3,
+float x4, float y4, float val4, float px, float py){
+  
+  // find first point
+  float a = interpolationX(x1,y1, val1, x2,y2, val2, px,y1);
+  float b = interpolationX(x3,y3, val3, x4,y4, val4, px,y3);
+   
+  return interpolationY(px,y1, a, px, y3, b, px, py);; 
+}
+
+// finds the value between two points
+float interpolationX(float x1, float y1, float pixel1, float x2, float y2, float pixel2, float px, float py){
+  
+  return (x2-px)/(x2-x1) * pixel1 + (px - x1)/(x2-x1) * pixel2;
+  
+}
+
+float interpolationY(float x1, float y1, float pixel1, float x2, float y2, float pixel2, float px, float py){ 
+  return (y2 - py)/(y2-y1) * pixel1 + (py - y1)/(y2-y1) * pixel2;
 }
