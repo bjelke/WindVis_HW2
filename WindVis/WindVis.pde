@@ -17,6 +17,8 @@ Table vwnd;
 // map and pick out the subset that corresponds to the range from
 // 135W to 65W, and from 55N to 25N
 PImage img;
+int numParticle = 2000;
+Particle[] particles = new Particle[numParticle];
 
 void setup() {
   // If this doesn't work on your computer, you can remove the 'P3D'
@@ -27,14 +29,34 @@ void setup() {
   img = loadImage("background.png");
   uwnd = loadTable("uwnd.csv");
   vwnd = loadTable("vwnd.csv");
+  loadData();
   
 }
+
 
 void draw() {
   background(255);
   image(img, 0, 0, width, height);
   drawMouseLine();
+
+  //Check if the value of lifetime is zero, otherwise display it. 
+  //Have an array of particles. Then display it then check the value of the life time. 
+  //Diplay it using the shapeThing. 
+  //Get a random value of postion and magnitude, then set the value. 
+   for (int i = 0; i < particles.length; i++) {
+     if(particles[i].lifeTime != 0.0){
+       particles[i].lifeTime = randomLifetime(200, 0);
+     }
+     particles[i].display();
+  }
 }
+
+//Get the random postion of the life time 
+float randomLifetime(int ub, int lb){
+      float randomLifetime = (float) Math.random() * ub + lb;
+      return randomLifetime;
+
+  }
 
 void drawMouseLine() {
   // Convert from pixel coordinates into coordinates
@@ -96,4 +118,21 @@ float interpolationX(float x1, float y1, float pixel1, float x2, float y2, float
 
 float interpolationY(float x1, float y1, float pixel1, float x2, float y2, float pixel2, float px, float py){ 
   return (y2 - py)/(y2-y1) * pixel1 + (py - y1)/(y2-y1) * pixel2;
+}
+
+void loadData(){
+  //Check if the value of lifetime is zero, otherwise display it. 
+  //Have an array of particles. Then display it then check the value of the life time. 
+  //Diplay it using the shapeThing. 
+  //Get a random value of postion and magnitude, then set the value. 
+   for (int i = 0; i < numParticle; i++) {
+     //Get random x 
+     //Get random y 
+     //Get random lifeTime
+     float randomX =  randomLifetime(700, 0);
+     float randomY =  randomLifetime(400, 0);
+     float lifeTime =  randomLifetime(200, 0);
+     particles[i] = new Particle( randomX, randomY, lifeTime);
+   }
+  
 }
