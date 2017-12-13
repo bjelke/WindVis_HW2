@@ -51,28 +51,33 @@ void draw() {
   strokeWeight(2);
   fill(153);
   beginShape(POINTS);
+  
+  
   for (int i = 0; i < particles.length; i++) {
      if(particles[i].lifeTime < 1){
-       particles[i].lifeTime = randomLifetime(maxLifetime, 0);
+       particles[i].lifeTime = randomVal(maxLifetime, 0);
        particles[i].newRandomPosition();
      }
      else{
-       particles[i].updatePosition();
+       particles[i].decrementLife();
      }
      vertex(particles[i].x, particles[i].y);
-     particles[i].display(); // we should probably call this something else
+     float a = particles[i].x * uwnd.getColumnCount() / width;
+    float b = particles[i].y * uwnd.getRowCount() / height;
+    float dx = readInterp(uwnd, a, b) * 10;
+    float dy = -readInterp(vwnd, a, b) * 10;
+     particles[i].updatePosition(dx,dy); // we should probably call this something else
   }
   endShape();
 }
 
-//Get the random postion of the life time -- ??????????????????????????????????????
-float randomLifetime(int ub, int lb){
-      float randomLifetime = (float) Math.random() * ub + lb;
-      return randomLifetime;
-
+//Get random value between lower bound (lb) and upper bound (ub) 
+  float randomVal(int lb, int ub){
+      float randomVal = (float) Math.random() * ub + lb;
+      return randomVal;
   }
 
-void drawMouseLine() {
+ void drawMouseLine() {
   // Convert from pixel coordinates into coordinates
   // corresponding to the data.
   float a = mouseX * uwnd.getColumnCount() / width;
@@ -92,6 +97,9 @@ float readInterp(Table tab, float a, float b) {
   int x = int(a);
   int y = int(b);
   // TODO: do bilinear interpolation
+  
+ // float bilinearInterpolationVal = bilinearInterpolation(float x1, float y1, float val1, float x2, float y2, float val2, float x3, float y3, float val3,float x4, float y4, float val4, float px, float py);
+  //System.out.println(readRaw(tab, 10,25));
   return readRaw(tab, x, y);
 }
 
@@ -109,7 +117,6 @@ float readRaw(Table tab, int x, int y) {
   if (y >= tab.getRowCount()) {
     y = tab.getRowCount() - 1;
   }
-  System.out.println(bilinearInterpolation(14.0,20.0, 91.0,15.0,20.0,210.0, 14.0,21.0,162.0,15.0,21.0,95.0,14.5,20.2));
   return tab.getFloat(y,x);
 }
 
@@ -144,10 +151,10 @@ void loadData(){
      //Get random x 
      //Get random y 
      //Get random lifeTime
-     float randomX =  randomLifetime(700, 0);
-     float randomY =  randomLifetime(400, 0);
-     float lifeTime =  randomLifetime(200, 0);
-     particles[i] = new Particle( randomX, randomY, lifeTime);
+     float randomX =  randomVal(0, 700);
+     float randomY =  randomVal(0, 400);
+     float lifeTime =  randomVal(0, 200);
+     particles[i] = new Particle(randomX, randomY, lifeTime);
    }
   
 }

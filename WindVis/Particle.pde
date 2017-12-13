@@ -1,4 +1,5 @@
 class Particle{
+  float step = 0.05;
   
   float x;
   float y;
@@ -11,28 +12,23 @@ class Particle{
     this.lifeTime = lifeTime;
   }
   
-  void updatePosition(){
-    //Update the position here using the Euler Method. 
-    this.x = x + (float) Math.random() * 0.1 + (-0.01);
-    this.y = y + (float) Math.random() * 0.1 + (-0.01);
+  void updatePosition(float u,float v){
+    //Update the position here using the Euler Method.
+    
+    this.x = x + step*u;
+    this.y = y + step*v;
   }
   
   void newRandomPosition(){
     this.x = (float) Math.random()* 700;
-    this.y = (float) Math.random()*400;
+    this.y = (float) Math.random()* 400;
   }
   
   
   
-  void display(){
+  void decrementLife(){
 
     lifeTime = lifeTime - 1; 
-    updatePosition();
-    
-    //Draw  beginShape(POINTS) 
-    //Set the new value of lifetime 
-    //Decrease the value of lifetime.   
-    
     
   }
 }
