@@ -18,7 +18,9 @@ Table vwnd;
 // 135W to 65W, and from 55N to 25N
 PImage img;
 int numParticle = 2000;
-Particle[] particles = new Particle[numParticle];
+Particle[] particles;
+
+int maxLifetime = 200;
 
 void setup() {
   // If this doesn't work on your computer, you can remove the 'P3D'
@@ -29,6 +31,8 @@ void setup() {
   img = loadImage("background.png");
   uwnd = loadTable("uwnd.csv");
   vwnd = loadTable("vwnd.csv");
+  
+  particles = new Particle[numParticle];
   loadData();
   
 }
@@ -42,16 +46,26 @@ void draw() {
   //Check if the value of lifetime is zero, otherwise display it. 
   //Have an array of particles. Then display it then check the value of the life time. 
   //Diplay it using the shapeThing. 
-  //Get a random value of postion and magnitude, then set the value. 
-   for (int i = 0; i < particles.length; i++) {
-     if(particles[i].lifeTime != 0.0){
-       particles[i].lifeTime = randomLifetime(200, 0);
+  //Get a random value of postion and magnitude, then set the value.
+  stroke(0);
+  strokeWeight(2);
+  fill(153);
+  beginShape(POINTS);
+  for (int i = 0; i < particles.length; i++) {
+     if(particles[i].lifeTime < 1){
+       particles[i].lifeTime = randomLifetime(maxLifetime, 0);
+       particles[i].newRandomPosition();
      }
-     particles[i].display();
+     else{
+       particles[i].updatePosition();
+     }
+     vertex(particles[i].x, particles[i].y);
+     particles[i].display(); // we should probably call this something else
   }
+  endShape();
 }
 
-//Get the random postion of the life time 
+//Get the random postion of the life time -- ??????????????????????????????????????
 float randomLifetime(int ub, int lb){
       float randomLifetime = (float) Math.random() * ub + lb;
       return randomLifetime;
@@ -109,6 +123,7 @@ float x4, float y4, float val4, float px, float py){
   return interpolationY(px,y1, a, px, y3, b, px, py);
 }
 
+//TODO: convert this to use particles once we have a good idea of the data we're passing in
 // finds the value between two points
 float interpolationX(float x1, float y1, float pixel1, float x2, float y2, float pixel2, float px, float py){
   
