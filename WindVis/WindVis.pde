@@ -66,19 +66,12 @@ void draw() {
      float b = particles[i].y * uwnd.getRowCount() / height;
      float dx = readInterp(uwnd, a, b);
      float dy = -readInterp(vwnd, a, b);
-     particles[i].updatePositionEuler(dx,dy);
-     
-     updatePositionRK();
+     //particles[i].updatePositionEuler(dx,dy);
+     particles[i].updatePositionRK(dx,dy, uwnd, vwnd);
   }
   endShape();
 }
 
-void updatePositionRK(){
-   //Runge - Kutta 4
-   // float k1 = step*u;
-   // float k2 = step*(x + 0.5*k1...
-   // need bilinear interpolation to make this work?
-}
 
 //Get random value between lower bound (lb) and upper bound (ub) 
   float randomVal(int lb, int ub){
@@ -102,20 +95,36 @@ void updatePositionRK(){
 
 // Reads a bilinearly-interpolated value at the given a and b
 // coordinates.  Both a and b should be in data coordinates.
-float readInterp(Table tab, float a, float b) {
-  int x = int(a);
-  int y = int(b);
+static float readInterp(Table tab, float a, float b) {
   // TODO: do bilinear interpolation
-  
- // float bilinearInterpolationVal = bilinearInterpolation(float x1, float y1, float val1, float x2, float y2, float val2, float x3, float y3, float val3,float x4, float y4, float val4, float px, float py);
+  int x1 = int(a);
+  int y1 = int(b);
+  float val1 = readRaw(tab, x1, y1);
+
+  int x2 = x1+1;
+  int y2 = y1;
+  float val2 = readRaw(tab, x2, y2);
+
+  int x3 = x1;
+  int y3 = y1+1;
+  float val3 = readRaw(tab, x3, y3);
+
+  int x4 = x1 + 1;
+  int y4 = y1 + 1;
+  float val4 = readRaw(tab, x4, y4);
+  float result = bilinearInterpolation((float) x1, (float) y1, val1, (float) x2, (float) y2, val2, (float) x3, (float) y3, (float) val3,(float) x4, (float) y4, (float) val4, a, b);
+
+
+  return result;
+
   //System.out.println(readRaw(tab, 10,25));
   //from wikipedia
   //System.out.println(bilinearInterpolation(14.0,20.0,91.0,15.0,20.0,210.0,14.0,21.0,162.0,15.0,21.0,95.0, 14.5,20.2));
-  return readRaw(tab, x, y);
+  //return readRaw(tab, x1, y1);
 }
 
 // Reads a raw value 
-float readRaw(Table tab, int x, int y) {
+static float readRaw(Table tab, int x, int y) {
   if (x < 0) {
     x = 0;
   }
@@ -131,7 +140,7 @@ float readRaw(Table tab, int x, int y) {
   return tab.getFloat(y,x);
 }
 
-float bilinearInterpolation(float x1, float y1, float val1, float x2, float y2, float val2, float x3, float y3, float val3,
+static float bilinearInterpolation(float x1, float y1, float val1, float x2, float y2, float val2, float x3, float y3, float val3,
 float x4, float y4, float val4, float px, float py){
   
   // find 2 values at x, then interpolate in the y direction
@@ -142,11 +151,11 @@ float x4, float y4, float val4, float px, float py){
 
 //TODO: convert this to use particles once we have a good idea of the data we're passing in
 // finds the value between two points
-float interpolationX(float x1, float pixel1, float x2, float pixel2, float px){
+static float interpolationX(float x1, float pixel1, float x2, float pixel2, float px){
   return (x2-px)/(x2-x1) * pixel1 + (px - x1)/(x2-x1) * pixel2;
 }
 
-float interpolationY(float y1, float pixel1,float y2, float pixel2, float py){ 
+static float interpolationY(float y1, float pixel1,float y2, float pixel2, float py){ 
   return (y2 - py)/(y2-y1) * pixel1 + (py - y1)/(y2-y1) * pixel2;
 }
 
