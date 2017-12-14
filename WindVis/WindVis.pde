@@ -63,12 +63,21 @@ void draw() {
      }
      vertex(particles[i].x, particles[i].y);
      float a = particles[i].x * uwnd.getColumnCount() / width;
-    float b = particles[i].y * uwnd.getRowCount() / height;
-    float dx = readInterp(uwnd, a, b) * 10;
-    float dy = -readInterp(vwnd, a, b) * 10;
-     particles[i].updatePosition(dx,dy); // we should probably call this something else
+     float b = particles[i].y * uwnd.getRowCount() / height;
+     float dx = readInterp(uwnd, a, b);
+     float dy = -readInterp(vwnd, a, b);
+     particles[i].updatePositionEuler(dx,dy);
+     
+     updatePositionRK();
   }
   endShape();
+}
+
+void updatePositionRK(){
+   //Runge - Kutta 4
+   // float k1 = step*u;
+   // float k2 = step*(x + 0.5*k1...
+   // need bilinear interpolation to make this work?
 }
 
 //Get random value between lower bound (lb) and upper bound (ub) 
@@ -100,6 +109,8 @@ float readInterp(Table tab, float a, float b) {
   
  // float bilinearInterpolationVal = bilinearInterpolation(float x1, float y1, float val1, float x2, float y2, float val2, float x3, float y3, float val3,float x4, float y4, float val4, float px, float py);
   //System.out.println(readRaw(tab, 10,25));
+  //from wikipedia
+  //System.out.println(bilinearInterpolation(14.0,20.0,91.0,15.0,20.0,210.0,14.0,21.0,162.0,15.0,21.0,95.0, 14.5,20.2));
   return readRaw(tab, x, y);
 }
 
@@ -123,22 +134,19 @@ float readRaw(Table tab, int x, int y) {
 float bilinearInterpolation(float x1, float y1, float val1, float x2, float y2, float val2, float x3, float y3, float val3,
 float x4, float y4, float val4, float px, float py){
   
-  // find first point
-  float a = interpolationX(x1,y1, val1, x2,y2, val2, px,y1);
-  float b = interpolationX(x3,y3, val3, x4,y4, val4, px,y3);
-   
-  return interpolationY(px,y1, a, px, y3, b, px, py);
+  // find 2 values at x, then interpolate in the y direction
+  float a = interpolationX(x1, val1, x2, val2, px);
+  float b = interpolationX(x3, val3, x4, val4, px);
+  return interpolationY(y1, a, y3, b, py);
 }
 
 //TODO: convert this to use particles once we have a good idea of the data we're passing in
 // finds the value between two points
-float interpolationX(float x1, float y1, float pixel1, float x2, float y2, float pixel2, float px, float py){
-  
+float interpolationX(float x1, float pixel1, float x2, float pixel2, float px){
   return (x2-px)/(x2-x1) * pixel1 + (px - x1)/(x2-x1) * pixel2;
-  
 }
 
-float interpolationY(float x1, float y1, float pixel1, float x2, float y2, float pixel2, float px, float py){ 
+float interpolationY(float y1, float pixel1,float y2, float pixel2, float py){ 
   return (y2 - py)/(y2-y1) * pixel1 + (py - y1)/(y2-y1) * pixel2;
 }
 

@@ -1,5 +1,5 @@
 class Particle{
-  float step = 0.05;
+  float step = 0.1;
   
   float x;
   float y;
@@ -12,9 +12,8 @@ class Particle{
     this.lifeTime = lifeTime;
   }
   
-  void updatePosition(float u,float v){
+  void updatePositionEuler(float u,float v){
     //Update the position here using the Euler Method.
-    
     this.x = x + step*u;
     this.y = y + step*v;
   }
