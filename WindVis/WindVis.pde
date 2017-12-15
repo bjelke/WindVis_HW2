@@ -17,10 +17,10 @@ Table vwnd;
 // map and pick out the subset that corresponds to the range from
 // 135W to 65W, and from 55N to 25N
 PImage img;
-int numParticle = 2000;
+int numParticle = 3000;
 Particle[] particles;
 
-int maxLifetime = 200;
+int maxLifetime = 300;
 
 void setup() {
   // If this doesn't work on your computer, you can remove the 'P3D'
@@ -41,13 +41,14 @@ void setup() {
 void draw() {
   background(255);
   image(img, 0, 0, width, height);
+  stroke(0,0,255,255);
   drawMouseLine();
 
   //Check if the value of lifetime is zero, otherwise display it. 
   //Have an array of particles. Then display it then check the value of the life time. 
   //Diplay it using the shapeThing. 
   //Get a random value of postion and magnitude, then set the value.
-  stroke(0,0,255,255);
+ 
   strokeWeight(3);
   fill(153);
   beginShape(POINTS);
@@ -63,12 +64,14 @@ void draw() {
      int transparency = (int)map(particles[i].lifeTime, 0, maxLifetime, 0, 255);
      stroke(0,0,255,transparency);
      vertex(particles[i].x, particles[i].y);
+     
      float a = particles[i].x * uwnd.getColumnCount() / width;
      float b = particles[i].y * uwnd.getRowCount() / height;
      float dx = readInterp(uwnd, a, b);
-     float dy = -readInterp(vwnd, a, b);
-     particles[i].updatePositionEuler(dx,dy);
-     //particles[i].updatePositionRK(dx,dy, uwnd, vwnd);
+     float dy = readInterp(vwnd, a, b);
+     
+     //particles[i].updatePositionEuler(dx,dy);
+     particles[i].updatePositionRK(dx,dy, uwnd, vwnd, a, b);
   }
   endShape();
 }
@@ -143,14 +146,13 @@ float x4, float y4, float val4, float px, float py){
   return interpolationY(y1, a, y3, b, py);
 }
 
-//TODO: convert this to use particles once we have a good idea of the data we're passing in
 // finds the value between two points
-static float interpolationX(float x1, float pixel1, float x2, float pixel2, float px){
-  return (x2-px)/(x2-x1) * pixel1 + (px - x1)/(x2-x1) * pixel2;
+static float interpolationX(float x1, float val1, float x2, float val2, float px){
+  return (x2-px)/(x2-x1) * val1 + (px - x1)/(x2-x1) * val2;
 }
 
-static float interpolationY(float y1, float pixel1,float y2, float pixel2, float py){ 
-  return (y2 - py)/(y2-y1) * pixel1 + (py - y1)/(y2-y1) * pixel2;
+static float interpolationY(float y1, float val1,float y2, float val2, float py){ 
+  return (y2 - py)/(y2-y1) *val1 + (py - y1)/(y2-y1) * val2;
 }
 
 void loadData(){
@@ -159,9 +161,7 @@ void loadData(){
   //Diplay it using the shapeThing. 
   //Get a random value of postion and magnitude, then set the value. 
    for (int i = 0; i < numParticle; i++) {
-     //Get random x 
-     //Get random y 
-     //Get random lifeTime
+     //Get random x, y position
      int randomX =  randomVal(0, 700);
      int randomY =  randomVal(0, 400);
      int lifeTime =  randomVal(0, 200);

@@ -18,25 +18,22 @@ class Particle{
     this.y = y + step*v;
   }
   
-  void updatePositionRK(float dx, float dy, Table u, Table v){
+  void updatePositionRK(float dx, float dy, Table u, Table v, float a, float b){
    //Runge - Kutta 4
-   //for x, readInterp(Table tab, float a, float b)
-   float kx1 = step*dx;
-   float ky1 = step*dy;
-   //float kx1 = dx;
-   //float ky1 = dy;
+   float kx1 = dx;
+   float ky1 = dy;
    
-   float kx2 = step*(WindVis.readInterp(u,x+0.5*kx1, y+0.5*ky1));
-   float ky2 = step*(-WindVis.readInterp(v,x+0.5*kx1, y+0.5*ky1));
+   float kx2 = (WindVis.readInterp(u,a+0.5*kx1*step, b+0.5*ky1*step));
+   float ky2 = WindVis.readInterp(v,a+0.5*kx1*step, b+0.5*ky1*step);
    
-   float kx3 = step*(WindVis.readInterp(u,x+0.5*kx2, y+0.5*ky2));
-   float ky3 = step*(-WindVis.readInterp(v,x+0.5*kx2, y+0.5*ky2));
+   float kx3 = (WindVis.readInterp(u,a+0.5*kx2*step, b+0.5*ky2*step));
+   float ky3 = (WindVis.readInterp(v,a+0.5*kx2*step, b+0.5*ky2*step));
    
-   float kx4 = step*(WindVis.readInterp(u,x+kx3, y+ky3));
-   float ky4 = step*(-WindVis.readInterp(v,x+kx3, y+ky3));
+   float kx4 = (WindVis.readInterp(u,a+kx3*step, a+ky3*step));
+   float ky4 = (WindVis.readInterp(v,a+kx3*step, b+ky3*step));
    
-   this.x = x + (1.0/6)*kx1 + (1.0/3)*kx2 + (1.0/3)*kx3 + (1.0/6)*kx4; 
-   this.y = y + (1.0/6)*ky1 + (1.0/3)*ky2 + (1.0/3)*ky3 + (1.0/6)*ky4;
+   this.x = x + step*((1.0/6)*kx1 + (1.0/3)*kx2 + (1.0/3)*kx3 + (1.0/6)*kx4); 
+   this.y = y - step*((1.0/6)*ky1 + (1.0/3)*ky2 + (1.0/3)*ky3 + (1.0/6)*ky4);
    
   
 }
