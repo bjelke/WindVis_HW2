@@ -76,7 +76,7 @@ void draw() {
 
 //Get random value between lower bound (lb) and upper bound (ub) 
   int randomVal(int lb, int ub){
-      int randomVal = (int)Math.random() * ub + lb;
+      int randomVal = (int)(Math.random() * ub + lb);
       return randomVal;
   }
 
