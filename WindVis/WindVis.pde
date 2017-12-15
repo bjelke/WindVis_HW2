@@ -47,12 +47,11 @@ void draw() {
   //Have an array of particles. Then display it then check the value of the life time. 
   //Diplay it using the shapeThing. 
   //Get a random value of postion and magnitude, then set the value.
-  stroke(0);
-  strokeWeight(2);
+  stroke(0,0,255,255);
+  strokeWeight(3);
   fill(153);
   beginShape(POINTS);
-  
-  
+ 
   for (int i = 0; i < particles.length; i++) {
      if(particles[i].lifeTime < 1){
        particles[i].lifeTime = randomVal(maxLifetime, 0);
@@ -61,21 +60,23 @@ void draw() {
      else{
        particles[i].decrementLife();
      }
+     int transparency = (int)map(particles[i].lifeTime, 0, maxLifetime, 0, 255);
+     stroke(0,0,255,transparency);
      vertex(particles[i].x, particles[i].y);
      float a = particles[i].x * uwnd.getColumnCount() / width;
      float b = particles[i].y * uwnd.getRowCount() / height;
      float dx = readInterp(uwnd, a, b);
      float dy = -readInterp(vwnd, a, b);
-     //particles[i].updatePositionEuler(dx,dy);
-     particles[i].updatePositionRK(dx,dy, uwnd, vwnd);
+     particles[i].updatePositionEuler(dx,dy);
+     //particles[i].updatePositionRK(dx,dy, uwnd, vwnd);
   }
   endShape();
 }
 
 
 //Get random value between lower bound (lb) and upper bound (ub) 
-  float randomVal(int lb, int ub){
-      float randomVal = (float) Math.random() * ub + lb;
+  int randomVal(int lb, int ub){
+      int randomVal = (int)Math.random() * ub + lb;
       return randomVal;
   }
 
@@ -96,7 +97,6 @@ void draw() {
 // Reads a bilinearly-interpolated value at the given a and b
 // coordinates.  Both a and b should be in data coordinates.
 static float readInterp(Table tab, float a, float b) {
-  // TODO: do bilinear interpolation
   int x1 = int(a);
   int y1 = int(b);
   float val1 = readRaw(tab, x1, y1);
@@ -112,15 +112,9 @@ static float readInterp(Table tab, float a, float b) {
   int x4 = x1 + 1;
   int y4 = y1 + 1;
   float val4 = readRaw(tab, x4, y4);
-  float result = bilinearInterpolation((float) x1, (float) y1, val1, (float) x2, (float) y2, val2, (float) x3, (float) y3, (float) val3,(float) x4, (float) y4, (float) val4, a, b);
-
+  float result = bilinearInterpolation((float) x1, (float) y1, val1, (float) x2, (float) y2, val2, (float) x3, (float) y3, val3,(float) x4, (float) y4, val4, a, b);
 
   return result;
-
-  //System.out.println(readRaw(tab, 10,25));
-  //from wikipedia
-  //System.out.println(bilinearInterpolation(14.0,20.0,91.0,15.0,20.0,210.0,14.0,21.0,162.0,15.0,21.0,95.0, 14.5,20.2));
-  //return readRaw(tab, x1, y1);
 }
 
 // Reads a raw value 
@@ -168,9 +162,9 @@ void loadData(){
      //Get random x 
      //Get random y 
      //Get random lifeTime
-     float randomX =  randomVal(0, 700);
-     float randomY =  randomVal(0, 400);
-     float lifeTime =  randomVal(0, 200);
+     int randomX =  randomVal(0, 700);
+     int randomY =  randomVal(0, 400);
+     int lifeTime =  randomVal(0, 200);
      particles[i] = new Particle(randomX, randomY, lifeTime);
    }
   

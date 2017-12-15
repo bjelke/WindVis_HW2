@@ -3,10 +3,10 @@ class Particle{
   
   float x;
   float y;
-  float lifeTime;
+  int lifeTime;
      
 
-  Particle(float x, float y, float lifeTime){
+  Particle(float x, float y, int lifeTime){
     this.x = x;
     this.y = y;
     this.lifeTime = lifeTime;
@@ -49,8 +49,6 @@ class Particle{
   
   
   void decrementLife(){
-
     lifeTime = lifeTime - 1; 
-    
   }
 }
