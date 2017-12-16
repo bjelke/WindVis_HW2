@@ -3,7 +3,7 @@
 
 This homework is done by Brighten Jelke and Khin Kyaw.
 
-For the wind visualization, we experimented with changing the number and lifetime of the generated particles as well as the step size for calculating movement along the vector. As the lifetime of the particles decreases, we chose to decrease the opacity as well, so that the particles with the maximum amount of life left are fully opaque and the ones with 0 are fully transparent. 
+For the wind visualization, we experimented with changing the number and lifetime of the generated particles as well as the step size for calculating movement along the vector. As the lifetime of the particles decreases, we chose to decrease the opacity, so that the particles with the maximum amount of life left are fully opaque and the ones with 0 are fully transparent. 
 
 **Lifetime and Number of Particles**
 
