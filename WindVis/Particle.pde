@@ -1,6 +1,8 @@
+// Authors: Brighten Jelke and Khin Kyaw
+// Class representing a single particle in the wind visualization.
+
 class Particle{
   float step = 0.1;
-  
   float x;
   float y;
   int lifeTime;
@@ -12,14 +14,14 @@ class Particle{
     this.lifeTime = lifeTime;
   }
   
+   //Update the position here using the Euler Method.
   void updatePositionEuler(float u,float v){
-    //Update the position here using the Euler Method.
     this.x = x + step*u;
     this.y = y + step*v;
   }
   
+  // update the position here using Runge-Kutta 4
   void updatePositionRK(float dx, float dy, Table u, Table v, float a, float b){
-   //Runge - Kutta 4
    float kx1 = dx;
    float ky1 = dy;
    
@@ -34,17 +36,15 @@ class Particle{
    
    this.x = x + step*((1.0/6)*kx1 + (1.0/3)*kx2 + (1.0/3)*kx3 + (1.0/6)*kx4); 
    this.y = y - step*((1.0/6)*ky1 + (1.0/3)*ky2 + (1.0/3)*ky3 + (1.0/6)*ky4);
-   
-  
-}
-  
-  void newRandomPosition(){
-    this.x = (float) Math.random()* 700;
-    this.y = (float) Math.random()* 400;
   }
   
+  // set new random position
+  void newRandomPosition(){
+    this.x = (float) Math.random()* width;
+    this.y = (float) Math.random()* height;
+  }
   
-  
+  // decrease remaining life of particle
   void decrementLife(){
     lifeTime = lifeTime - 1; 
   }

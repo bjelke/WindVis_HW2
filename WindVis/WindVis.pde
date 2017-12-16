@@ -1,3 +1,5 @@
+// Authors: Brighten Jelke and Khin Kyaw
+
 // uwnd stores the 'u' component of the wind.
 // The 'u' component is the east-west component of the wind.
 // Positive values indicate eastward wind, and negative
@@ -37,41 +39,41 @@ void setup() {
   
 }
 
-
 void draw() {
   background(255);
   image(img, 0, 0, width, height);
   stroke(0,0,255,255);
   drawMouseLine();
-
-  //Check if the value of lifetime is zero, otherwise display it. 
-  //Have an array of particles. Then display it then check the value of the life time. 
-  //Diplay it using the shapeThing. 
-  //Get a random value of postion and magnitude, then set the value.
  
   strokeWeight(3);
   fill(153);
   beginShape(POINTS);
- 
+   
+  // draw particles
   for (int i = 0; i < particles.length; i++) {
-     if(particles[i].lifeTime < 1){
-       particles[i].lifeTime = randomVal(maxLifetime, 0);
-       particles[i].newRandomPosition();
+     Particle p = particles[i];
+     // decrease lifetime if necessary
+     if(p.lifeTime < 1){
+       p.lifeTime = randomVal(maxLifetime, 0);
+       p.newRandomPosition();
      }
      else{
-       particles[i].decrementLife();
+       p.decrementLife();
      }
-     int transparency = (int)map(particles[i].lifeTime, 0, maxLifetime, 0, 255);
+     // calculate opacity
+     int transparency = (int)map(p.lifeTime, 0, maxLifetime, 0, 255);
      stroke(0,0,255,transparency);
-     vertex(particles[i].x, particles[i].y);
      
-     float a = particles[i].x * uwnd.getColumnCount() / width;
-     float b = particles[i].y * uwnd.getRowCount() / height;
+     vertex(p.x, p.y);
+     
+     // calculate movement
+     float a = p.x * uwnd.getColumnCount() / width;
+     float b = p.y * uwnd.getRowCount() / height;
      float dx = readInterp(uwnd, a, b);
      float dy = readInterp(vwnd, a, b);
      
-     //particles[i].updatePositionEuler(dx,dy);
-     particles[i].updatePositionRK(dx,dy, uwnd, vwnd, a, b);
+     //p.updatePositionEuler(dx,dy);
+     p.updatePositionRK(dx,dy, uwnd, vwnd, a, b);
   }
   endShape();
 }
@@ -100,6 +102,7 @@ void draw() {
 // Reads a bilinearly-interpolated value at the given a and b
 // coordinates.  Both a and b should be in data coordinates.
 static float readInterp(Table tab, float a, float b) {
+  // find four surrounding points
   int x1 = int(a);
   int y1 = int(b);
   float val1 = readRaw(tab, x1, y1);
@@ -155,17 +158,13 @@ static float interpolationY(float y1, float val1,float y2, float val2, float py)
   return (y2 - py)/(y2-y1) *val1 + (py - y1)/(y2-y1) * val2;
 }
 
+// initialize particles
 void loadData(){
-  //Check if the value of lifetime is zero, otherwise display it. 
-  //Have an array of particles. Then display it then check the value of the life time. 
-  //Diplay it using the shapeThing. 
-  //Get a random value of postion and magnitude, then set the value. 
    for (int i = 0; i < numParticle; i++) {
-     //Get random x, y position
-     int randomX =  randomVal(0, 700);
-     int randomY =  randomVal(0, 400);
-     int lifeTime =  randomVal(0, 200);
+     //Get random x, y position and lifetime
+     int randomX =  randomVal(0, width);
+     int randomY =  randomVal(0, height);
+     int lifeTime =  randomVal(0, maxLifetime);
      particles[i] = new Particle(randomX, randomY, lifeTime);
    }
-  
 }
